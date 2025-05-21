@@ -1,5 +1,6 @@
 from django.shortcuts import render
 
+from django.http import Http404
 
 posts = [
     {
@@ -45,25 +46,25 @@ posts = [
 ]
 
 
-# Create your views here.
 def index(request):
-    template = 'blog/index.html'
-    context = {'blog_posts': reversed(posts)}
-    return render(request, template, context)
+    """Главная страница / Лента записей"""
+    context = {'posts': posts}
+    return render(request, 'blog/index.html', context)
 
 
-def post_detail(request, pk):
-    template = 'blog/detail.html'
-    context = {'post': None}
-    for post in posts:
-        if post['id'] == pk:
-            context['post'] = post
-            break
-    
-    return render(request, template, context)
+def post_detail(request, id):
+    """Отображение полного описания выбранной записи"""
+    post = [post for post in posts if post['id'] == id]
+    if not post:
+        raise Http404('Вы указали неверный id')
+    context = {'post': post[0]}
+    return render(request, 'blog/detail.html', context)
 
 
 def category_posts(request, category_slug):
-    template = 'blog/category.html'
-    context = {'category': category_slug}
-    return render(request, template, context)
+    """Отображение публикаций категории"""
+    sorted_posts = [post for post in posts if post['category']
+                    == category_slug]
+    context = {'category': category_slug,
+               'posts': sorted_posts}
+    return render(request, 'blog/category.html', context)

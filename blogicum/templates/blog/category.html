@@ -1,7 +1,9 @@
-{% extends 'base.html' %}
-
-{% block title %}Публикации в категории - {{ category }}{% endblock title %}
-
+{% extends "base.html" %}
+{% load static %}
+{% block title %} {{ category }} {% endblock %}
 {% block content %}
-    <h1>Публикации в категории - {{ category }}</h1> 
+  <h1>Публикации в категории - {{ category }}</h1>
+  {% if posts %}
+    {% include "includes/posts_list.html" %}
+  {% endif %} 
 {% endblock %}
